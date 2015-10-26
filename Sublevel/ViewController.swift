@@ -21,12 +21,15 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Set URL for webView
         let url = NSURL(string: "https://sublevel.net/")
         let requested = NSURLRequest(URL: url!)
         webView.loadRequest(requested)
         webView.allowsBackForwardNavigationGestures = true
+        if #available(iOS 9.0, *) {
+            webView.allowsLinkPreview = true
+        }
         
         // Add refreshControl subView
         let refreshControl = UIRefreshControl()
@@ -35,6 +38,7 @@ class ViewController: UIViewController {
         
         // Inset progressView subView
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
+        webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
         let screen = UIScreen.mainScreen().bounds
         progressView.frame.size.width = screen.size.width
         progressView.trackTintColor = UIColor.clearColor()
@@ -48,12 +52,15 @@ class ViewController: UIViewController {
         webView.loadRequest(requested)
         refresh.endRefreshing()
     }
-
+    
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if (keyPath == "estimatedProgress") {
-            progressView.hidden = webView.estimatedProgress == 1
-            let size = 1 - Float(webView.estimatedProgress)
+            var size = Float(webView.estimatedProgress)
+            if (size == 1) { size = 0 }
             progressView.setProgress(size, animated: true)
+        }
+        if (keyPath == "loading") {
+            progressView.hidden = webView.loading == false
         }
     }
     
