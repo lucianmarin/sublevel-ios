@@ -23,9 +23,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // Set URL for webView
-        let url = NSURL(string: "https://sublevel.net/")
-        let requested = NSURLRequest(URL: url!)
-        webView.loadRequest(requested)
+        let url = URL(string: "https://sublevel.net/")
+        let requested = URLRequest(url: url!)
+        webView.load(requested)
         webView.allowsBackForwardNavigationGestures = true
         if #available(iOS 9.0, *) {
             webView.allowsLinkPreview = true
@@ -33,34 +33,34 @@ class ViewController: UIViewController {
         
         // Add refreshControl subView
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: Selector("handleRefresh:"), forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action: #selector(ViewController.handleRefresh(_:)), for: UIControlEvents.valueChanged)
         webView.scrollView.addSubview(refreshControl)
         
         // Inset progressView subView
-        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
-        webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
-        let screen = UIScreen.mainScreen().bounds
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
+        webView.addObserver(self, forKeyPath: "loading", options: .new, context: nil)
+        let screen = UIScreen.main.bounds
         progressView.frame.size.width = screen.size.width
-        progressView.trackTintColor = UIColor.clearColor()
+        progressView.trackTintColor = UIColor.clear
         self.view.insertSubview(progressView, aboveSubview: webView)
     }
     
-    func handleRefresh(refresh: UIRefreshControl) {
+    func handleRefresh(_ refresh: UIRefreshControl) {
         // Instead of webView?.reload()
-        let url = webView.URL
-        let requested = NSURLRequest(URL: url!)
-        webView.loadRequest(requested)
+        let url = webView.url
+        let requested = URLRequest(url: url!)
+        webView.load(requested)
         refresh.endRefreshing()
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if (keyPath == "estimatedProgress") {
             var size = Float(webView.estimatedProgress)
             if (size == 1) { size = 0 }
             progressView.setProgress(size, animated: true)
         }
         if (keyPath == "loading") {
-            progressView.hidden = webView.loading == false
+            progressView.isHidden = webView.isLoading == false
         }
     }
     
