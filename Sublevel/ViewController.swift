@@ -10,7 +10,6 @@ import UIKit
 import WebKit
 
 class ViewController: UIViewController {
-    
     var webView = WKWebView()
     let progressView = UIProgressView()
     
@@ -45,7 +44,7 @@ class ViewController: UIViewController {
         self.view.insertSubview(progressView, aboveSubview: webView)
     }
     
-    func handleRefresh(_ refresh: UIRefreshControl) {
+    @objc func handleRefresh(_ refresh: UIRefreshControl) {
         // Instead of webView?.reload()
         let url = webView.url
         let requested = URLRequest(url: url!)
