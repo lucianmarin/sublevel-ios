@@ -10,4 +10,4 @@ TO DO: Notifications
 
 Copyright: [Sublevel](https://sublevel.net/) (logo and related materials)
 
-&copy; 2015, Lucian Marin, MIT License
+&copy; 2015 Lucian Marin. All rights reserved.
